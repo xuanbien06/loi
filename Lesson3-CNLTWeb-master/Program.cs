@@ -1,3 +1,4 @@
+
 using Lesson3_CNLTWeb.Data;
 using Lesson3_CNLTWeb.Middleware;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,18 @@ builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 var app = builder.Build();
 
+// Apply migrations and seed data
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore/hsts
     app.UseHsts();
 }
 
@@ -42,3 +50,4 @@ app.MapControllerRoute(
 
 
 app.Run();
+
